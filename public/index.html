@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>index</title>
+    <script src="//cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="index" class="container">
+        <div class="header clearfix">
+      
+            <h3 class="text-muted">yao{{msg}}</h3>
+        </div>
+
+        <div class="jumbotron">
+            <h1>excel分析</h1>
+        </div>
+        <div class="row marketing">
+            <div class="col-lg-4">
+                <form>
+                    <div class="form-group">
+                        <label for="excel">File input</label>
+                        <input @change="upload" type="file" id="excel">
+                        <!-- <button type="button" @click="test">test</button> -->
+                        <p class="help-block">预计分析所需时间：{{cc}}</p>
+                    </div>
+                </form>
+
+            </div>
+            <div class="col-lg-8">
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">分析结果</div>
+                    <div class="panel-body">
+                        <table class="table">
+                            <tr>
+                                <th>类别</th>
+                                <th>总量</th>
+                            </tr>
+                            <tr v-for="(value, key) in list" >
+                                <td>{{key}}</td>
+                                <td>{{value.length}}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+</body>
+<script>
+    var vue = new Vue({
+        el: "#index",
+        data: {
+            msg: "123",
+            list: {
+                all: [],
+                cc: [],
+                qq: [],
+                tencent: [],
+                wx: []
+            },
+            cc: 0
+        },
+        methods: {
+            upload(e) {
+                var fd = new FormData();
+                var self = this;
+                fd.append("fileToUpload", e.target.files[0])
+                var file = fd.get("fileToUpload")
+                console.log(file.size)
+                console.log(file.size/200/1000)
+                $.ajax({
+                    data: fd,
+                    type: "post",
+                    url: "/v1/upfile",
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success(data) {
+
+                        self.list = data;
+                        console.log(self.list)
+                    }
+                })
+            },
+            test(e) {
+                var _this = this
+                $.ajax({
+                    data: "",
+                    type: "get",
+                    url: "/v1/upfile",
+                    success(data) {
+
+                    }
+                })
+            }
+        }
+    })
+
+</script>
+
+</html>
